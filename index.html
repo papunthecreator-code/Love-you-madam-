@@ -8,9 +8,6 @@
     <!-- Canvas Confetti Library for Grand Finale -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
-    <!-- YouTube IFrame Player API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -45,17 +42,6 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
-        }
-
-        /* Hidden YouTube Container */
-        #youtube-player {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
         }
 
         /* Pulsing Music Button */
@@ -346,8 +332,8 @@
     <!-- Canvas for Floating Hearts -->
     <canvas id="heartCanvas"></canvas>
 
-    <!-- Hidden YouTube Player Container -->
-    <div id="youtube-player"></div>
+    <!-- Background Music Stream (Catbox Link) -->
+    <audio id="bgSong" loop src="https://files.catbox.moe/c49u8b.mp3"></audio>
 
     <!-- Music Control Button -->
     <button class="audio-control" onclick="toggleAudio()">
@@ -422,28 +408,28 @@
     <footer>Made with endless love specially for 29-07-2026</footer>
 
     <script>
-            // Audio Toggle Function for song.mp3
-    function toggleAudio() {
-        const audio = document.getElementById("bgSong");
-        const icon = document.getElementById("musicIcon");
-        const text = document.getElementById("musicText");
-        const btn = document.querySelector(".audio-control");
+        // Audio Toggle Function
+        function toggleAudio() {
+            const audio = document.getElementById("bgSong");
+            const icon = document.getElementById("musicIcon");
+            const text = document.getElementById("musicText");
+            const btn = document.querySelector(".audio-control");
 
-        if (audio.paused) {
-            audio.play().then(() => {
-                icon.innerText = "⏸️";
-                text.innerText = "Pause Song";
-                btn.style.animation = "none";
-            }).catch(err => {
-                alert("Please check that song.mp3 is saved in your GitHub folder!");
-            });
-        } else {
-            audio.pause();
-            icon.innerText = "🎵";
-            text.innerText = "Play Our Song";
-            btn.style.animation = "pulse 2s infinite";
+            if (audio.paused) {
+                audio.play().then(() => {
+                    icon.innerText = "⏸️";
+                    text.innerText = "Pause Song";
+                    btn.style.animation = "none";
+                }).catch(err => {
+                    alert("Please tap the screen again to allow audio playback!");
+                });
+            } else {
+                audio.pause();
+                icon.innerText = "🎵";
+                text.innerText = "Play Our Song";
+                btn.style.animation = "pulse 2s infinite";
+            }
         }
-    }
 
         // Smart Typewriter Effect containing your exact words
         const textToType = "Thank you madam ji for coming in my life.<br><br>Har ladke ko ek ladki chahiye hota hai jo uske feelings ko samajh sake and sukh dukh mein support kar sake. Mein jitna socha tha usse bhi jada karti hai tu Bina swarth ke thank you be.<br><br>Mere pass words nhi hai tere liye jitna bhi bolun kaam hai.<br><br>Love you so much my better half 😚✨";
@@ -552,6 +538,3 @@
     </script>
 </body>
 </html>
-
-
-https://files.catbox.moe/c49u8b.mp3
