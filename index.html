@@ -8,6 +8,9 @@
     <!-- Canvas Confetti Library for Grand Finale -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
+    <!-- YouTube IFrame Player API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -42,6 +45,17 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
+        }
+
+        /* Hidden YouTube Container */
+        #youtube-player {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Pulsing Music Button */
@@ -332,8 +346,8 @@
     <!-- Canvas for Floating Hearts -->
     <canvas id="heartCanvas"></canvas>
 
-    <!-- Audio Element -->
-    <audio id="bgSong" loop src="song.mp3"></audio>
+    <!-- Hidden YouTube Player Container -->
+    <div id="youtube-player"></div>
 
     <!-- Music Control Button -->
     <button class="audio-control" onclick="toggleAudio()">
@@ -408,23 +422,51 @@
     <footer>Made with endless love specially for 29-07-2026</footer>
 
     <script>
-        // Audio Toggle
+        // ==========================================
+        // YOUTUBE BACKGROUND AUDIO SETTINGS
+        // Change "kJQP7kiw5Fk" below to any YouTube Video ID you prefer!
+        // ==========================================
+        const YOUTUBE_VIDEO_ID = "kJQP7kiw5Fk"; 
+
+        let ytPlayer;
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: YOUTUBE_VIDEO_ID,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': YOUTUBE_VIDEO_ID
+                }
+            });
+        }
+
+        // Audio Toggle Function
         function toggleAudio() {
-            const audio = document.getElementById("bgSong");
             const icon = document.getElementById("musicIcon");
             const text = document.getElementById("musicText");
             const btn = document.querySelector(".audio-control");
 
-            if (audio.paused) {
-                audio.play();
+            if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
+                alert("Music is loading, please tap again in 2 seconds!");
+                return;
+            }
+
+            const state = ytPlayer.getPlayerState();
+
+            if (state !== YT.PlayerState.PLAYING) {
+                ytPlayer.playVideo();
                 icon.innerText = "⏸️";
                 text.innerText = "Pause Song";
-                btn.style.animation = "none"; // Stop pulse when playing
+                btn.style.animation = "none";
             } else {
-                audio.pause();
+                ytPlayer.pauseVideo();
                 icon.innerText = "🎵";
                 text.innerText = "Play Our Song";
-                btn.style.animation = "pulse 2s infinite"; // Resume pulse when paused
+                btn.style.animation = "pulse 2s infinite";
             }
         }
 
@@ -439,18 +481,15 @@
             if (i < textToType.length) {
                 let char = textToType.charAt(i);
                 
-                // Handle HTML tags smoothly so they don't print on screen
                 if (char === '<') isTag = true;
                 if (char === '>') isTag = false;
 
                 document.getElementById("typewriterText").innerHTML = textToType.substring(0, i + 1);
                 i++;
                 
-                // If it's a tag, print instantly. If normal text, pause a bit.
-                let delay = isTag ? 0 : 50; 
+                let delay = isTag ? 0 : 45; 
                 setTimeout(typeWriter, delay);
             } else {
-                // Remove blinking cursor when finished
                 document.querySelector('.cursor').style.display = 'none';
             }
         }
@@ -461,7 +500,7 @@
             const screenPos = window.innerHeight / 1.2;
             if (letterPos < screenPos && !typed) {
                 typed = true;
-                setTimeout(typeWriter, 500); // Slight delay for dramatic effect
+                setTimeout(typeWriter, 400);
             }
         });
 
@@ -469,25 +508,12 @@
         function triggerSurprise() {
             document.getElementById('surpriseModal').style.display = 'flex';
             
-            // Fire confetti from both edges!
             var end = Date.now() + (1.5 * 1000);
             var colors = ['#e5c158', '#ffffff'];
 
             (function frame() {
-                confetti({
-                    particleCount: 4,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: colors
-                });
-                confetti({
-                    particleCount: 4,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: colors
-                });
+                confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+                confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
 
                 if (Date.now() < end) {
                     requestAnimationFrame(frame);
@@ -519,7 +545,7 @@
         function drawHeart(x, y, size, opacity) {
             ctx.save();
             ctx.globalAlpha = opacity;
-            ctx.fillStyle = '#e5c158'; // Golden hearts
+            ctx.fillStyle = '#e5c158';
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.bezierCurveTo(x - size / 2, y - size / 2, x - size, y + size / 3, x, y + size);
@@ -532,7 +558,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             hearts.forEach(heart => {
                 heart.y -= heart.speed;
-                // Wobble effect for natural floating
                 heart.x += Math.sin(heart.y * 0.05) * 0.5; 
                 
                 if (heart.y < -30) {
@@ -545,7 +570,6 @@
         }
         animateHearts();
 
-        // Adjust canvas when window resizes
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -553,5 +577,3 @@
     </script>
 </body>
 </html>
-<audio id="bgSong" loop src="song.mp3" onerror="alert('Music file (song.mp3) could not be loaded. Please check the file name on GitHub!')"></audio>
-
