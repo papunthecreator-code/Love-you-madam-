@@ -422,53 +422,28 @@
     <footer>Made with endless love specially for 29-07-2026</footer>
 
     <script>
-        // ==========================================
-        // YOUTUBE BACKGROUND AUDIO SETTINGS
-        // Change "kJQP7kiw5Fk" below to any YouTube Video ID you prefer!
-        // ==========================================
-        const YOUTUBE_VIDEO_ID = "kJQP7kiw5Fk"; 
+            // Audio Toggle Function for song.mp3
+    function toggleAudio() {
+        const audio = document.getElementById("bgSong");
+        const icon = document.getElementById("musicIcon");
+        const text = document.getElementById("musicText");
+        const btn = document.querySelector(".audio-control");
 
-        let ytPlayer;
-
-        function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                videoId: YOUTUBE_VIDEO_ID,
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': YOUTUBE_VIDEO_ID
-                }
-            });
-        }
-
-        // Audio Toggle Function
-        function toggleAudio() {
-            const icon = document.getElementById("musicIcon");
-            const text = document.getElementById("musicText");
-            const btn = document.querySelector(".audio-control");
-
-            if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
-                alert("Music is loading, please tap again in 2 seconds!");
-                return;
-            }
-
-            const state = ytPlayer.getPlayerState();
-
-            if (state !== YT.PlayerState.PLAYING) {
-                ytPlayer.playVideo();
+        if (audio.paused) {
+            audio.play().then(() => {
                 icon.innerText = "⏸️";
                 text.innerText = "Pause Song";
                 btn.style.animation = "none";
-            } else {
-                ytPlayer.pauseVideo();
-                icon.innerText = "🎵";
-                text.innerText = "Play Our Song";
-                btn.style.animation = "pulse 2s infinite";
-            }
+            }).catch(err => {
+                alert("Please check that song.mp3 is saved in your GitHub folder!");
+            });
+        } else {
+            audio.pause();
+            icon.innerText = "🎵";
+            text.innerText = "Play Our Song";
+            btn.style.animation = "pulse 2s infinite";
         }
+    }
 
         // Smart Typewriter Effect containing your exact words
         const textToType = "Thank you madam ji for coming in my life.<br><br>Har ladke ko ek ladki chahiye hota hai jo uske feelings ko samajh sake and sukh dukh mein support kar sake. Mein jitna socha tha usse bhi jada karti hai tu Bina swarth ke thank you be.<br><br>Mere pass words nhi hai tere liye jitna bhi bolun kaam hai.<br><br>Love you so much my better half 😚✨";
